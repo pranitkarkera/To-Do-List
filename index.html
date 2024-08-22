@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+    <style>
+        #taskSummaryDiv {
+          display: none;
+        }
+      </style>
+</head>
+<body class="container py-3">
+    <h1>To-Do List</h1>
+    <form id="eventForm">
+        <label for="enterTask">Enter Task:</label><br>
+        <input type="text" id="enterTask" placeholder="Enter your event" class="form-control"/><br>
+        <label for="selectDay">Select Day:</label><br>
+        <select id="selectDay" class="form-select">
+            <option value="Today">Today</option>
+            <option value="Tomorrow">Tomorrow</option>
+            
+        </select><br>
+        <button value="submit" class="btn btn-primary">Add Task</button><br><br>
+    </form>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h2>Today's Tasks:</h2>
+            <div id="todaysTask">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>Tomorrow's Tasks:</h2>
+            <div id="tomorrowsTask">
+            </div>
+        </div>
+        
+        <div class="mt-3" id="taskSummaryDiv">
+            <h3>Task Summary</h3>
+            <div id="taskSummaryColor">
+            <p>Tasks Today: <span id="todaysTaskCountResult">0</span> | Tasks Tomorrow: <span
+                id="tomorrowsTaskCountResult">0</span></p>
+            <p id="taskResult"></p>
+            </div>
+        </div>
+    </div>
+<script>
+    const enterTask = document.getElementById('enterTask')
+    const selectDay = document.getElementById('selectDay')
+    const todaysTask = document.getElementById('todaysTask')
+    const tomorrowsTask = document.getElementById('tomorrowsTask')
+    const eventForm = document.getElementById('eventForm')
+    const tomorrowsTaskCountResult = document.getElementById('tomorrowsTaskCountResult')
+    const todaysTaskCountResult = document.getElementById('todaysTaskCountResult')
+    const taskSummaryDiv = document.getElementById('taskSummaryDiv')
+    const taskResult = document.getElementById('taskResult')
+    let todayCount = 0;
+    let tomorrowCount = 0;
+
+    eventForm.addEventListener("submit", function(event){
+        event.preventDefault()
+            if(selectDay.value == "Today"){
+              const newTaskItem = document.createElement('p')
+              newTaskItem.className ='border p-3 mb-0'
+              newTaskItem.style="display:flex; justify-content: space-between; margin: 0.5rem 0";
+              newTaskItem.textContent = `${selectDay.value}: ${enterTask.value}`
+              const deleteBtn1 = document.createElement('button')
+              deleteBtn1.addEventListener('click', () => deleteTodayEvent(deleteBtn1))
+              deleteBtn1.classList.add('btn', 'btn-danger', 'btn-sm')
+              deleteBtn1.textContent = `Delete`
+              newTaskItem.appendChild(deleteBtn1)
+              todaysTask.appendChild(newTaskItem)
+              todayCount++
+              taskSummaryDiv.style.display = "block"
+              getTaskSummary()
+
+            }else{
+              const newTaskItem = document.createElement('p')
+              newTaskItem.classList ='border p-3 mb-0'
+              newTaskItem.style="display:flex; justify-content: space-between";
+              newTaskItem.textContent = `${selectDay.value}: ${enterTask.value}`
+              const deleteBtn2 = document.createElement('button')
+              deleteBtn2.addEventListener('click', () => deleteTomorrowEvent(deleteBtn2))
+              deleteBtn2.classList.add('btn', 'btn-danger', 'btn-sm')
+              deleteBtn2.textContent = `Delete`
+              newTaskItem.appendChild(deleteBtn2)
+              tomorrowsTask.appendChild(newTaskItem)
+              tomorrowCount++
+              taskSummaryDiv.style.display = "block"
+              getTaskSummary()
+            }
+            
+            eventForm.reset()
+    })
+
+    function deleteTodayEvent(deleteBtn1){
+      const listItem = deleteBtn1.parentElement
+      if(listItem.childNodes[0]){
+        todayCount--
+        getTaskSummary()
+      }
+      listItem.remove()
+    }
+
+    function deleteTomorrowEvent(deleteBtn2){
+      const listItem = deleteBtn2.parentElement
+      if(listItem.childNodes[0]){
+        tomorrowCount--
+        getTaskSummary()
+      }
+      listItem.remove()
+    }
+
+
+    function getTaskSummary() {
+      todaysTaskCountResult.textContent = todayCount
+      tomorrowsTaskCountResult.textContent = tomorrowCount
+
+      if (todayCount > tomorrowCount) {
+        taskResult.textContent = "More tasks today"
+        taskSummaryColor.style.color = "red"
+      } else if (tomorrowCount > todayCount) {
+        taskResult.textContent = "More tasks tomorrow"
+        taskSummaryColor.style.color = "green"
+      } else {
+        taskResult.textContent = ""
+        taskSummaryColor.style.color = "black"
+      }
+    }
+    
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
